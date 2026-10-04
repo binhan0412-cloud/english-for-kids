@@ -182,9 +182,11 @@
 
       <div class="big-mic">🎙️</div>
 
-      <button class="listen-button" onclick="speak(`Hello, I'm Mai.`)">
-        ▶️ Listen again
-      </button>
+      <button class="listen-button" onclick="startListening()">
+    🎤 Speak Hello
+</button>
+
+<p id="speech-result"></p>
     </div>
 
   </div>
@@ -212,6 +214,44 @@
         alert("Trình duyệt này chưa hỗ trợ chức năng phát âm.");
       }
     }
+
+    function startListening() {
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const result = document.getElementById("speech-result");
+
+    if (!SpeechRecognition) {
+        result.innerHTML = "Trình duyệt chưa hỗ trợ nhận diện giọng nói.";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    result.innerHTML = "🎤 Listening... Say: Hello";
+
+    recognition.onresult = function(event) {
+        const spokenText = event.results[0][0].transcript
+            .toLowerCase()
+            .trim();
+
+        if (spokenText.includes("hello")) {
+            result.innerHTML = "⭐ Great job! You said: " + spokenText;
+            speak("Great job!");
+        } else {
+            result.innerHTML = "😊 Try again! I heard: " + spokenText;
+        }
+    };
+
+    recognition.onerror = function() {
+        result.innerHTML = "😊 Please try again.";
+    };
+
+    recognition.start();
+}
   </script>
 
 </body>
