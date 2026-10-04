@@ -137,7 +137,30 @@
       text-decoration: none;
       font-weight: bold;
     }
+.progress-box {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 5px auto 15px;
+  padding: 8px;
+}
 
+.progress-step {
+  background: #ffffff;
+  border: 2px solid #dbeafe;
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #777;
+}
+
+.progress-step.active {
+  background: #ffd966;
+  border-color: #ffc107;
+  color: #333;
+}
     .footer {
       padding: 15px 0 30px;
       font-size: 14px;
@@ -151,7 +174,13 @@
     <h1>🌈 HELLO! 👋</h1>
     <p>Lesson 1 • Greetings • Chào hỏi</p>
   </div>
-
+<div class="progress-box">
+  <div class="progress-step active">⭐ Nghe</div>
+  <div class="progress-step">⭐ Học từ</div>
+  <div class="progress-step">⭐ Học câu</div>
+  <div class="progress-step">⭐ Nói</div>
+  <div class="progress-step">🎉 Xong</div>
+</div>
   <div class="lesson-box">
 
   <div class="mai"><img src="GRE_L01.png" alt="Mai"></div>
