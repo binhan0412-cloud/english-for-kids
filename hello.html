@@ -238,12 +238,20 @@
             .toLowerCase()
             .trim();
 
-        if (spokenText.includes("hello")) {
-            result.innerHTML = "⭐ Great job! You said: " + spokenText;
-            speak("Great job!");
-        } else {
-            result.innerHTML = "😊 Try again! I heard: " + spokenText;
-        }
+     if (spokenText === "hello") {
+    result.innerHTML = "🌟 Great job! I heard: " + spokenText;
+    speak("Great job!");
+} else if (
+    spokenText === "helo" ||
+    spokenText === "hallo" ||
+    spokenText === "hullo"
+) {
+    result.innerHTML = "👍 Almost! I heard: " + spokenText + ". Try one more time!";
+    speak("Almost. Try one more time.");
+} else {
+    result.innerHTML = "😊 Let's try again! I heard: " + spokenText;
+    speak("Let's try again.");
+}
     };
 
     recognition.onerror = function() {
