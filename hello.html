@@ -156,6 +156,14 @@
 
   <div class="mai"><img src="GRE_L01.png" alt="Mai"></div>
 
+    <div class="song-box">
+  <button class="listen-button" onclick="playSong()">
+    🎵 Hello Song
+  </button>
+
+  <audio id="hello-song" src="GRE_L01_SONG.mp3"></audio>
+</div>
+
     <div class="speech">
       Hello! I'm Mai. 👋
     </div>
@@ -200,6 +208,16 @@
   </div>
 
   <script>
+function playSong() {
+  const song = document.getElementById("hello-song");
+
+  if (song.paused) {
+    song.play();
+  } else {
+    song.pause();
+    song.currentTime = 0;
+  }
+}
     function speak(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
