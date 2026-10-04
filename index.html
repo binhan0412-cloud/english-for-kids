@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>English for Kids</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #b9ecff, #fff4c7);
+      min-height: 100vh;
+      text-align: center;
+      color: #333;
+    }
+
+    .header {
+      padding: 30px 15px 15px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 42px;
+      color: #ff5c7a;
+      text-shadow: 2px 2px white;
+    }
+
+    .header p {
+      font-size: 22px;
+      margin-top: 10px;
+    }
+
+    .welcome {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    .character {
+      font-size: 90px;
+      margin-bottom: 10px;
+    }
+
+    .speech {
+      background: white;
+      display: inline-block;
+      padding: 18px 30px;
+      border-radius: 30px;
+      font-size: 26px;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+    }
+
+    .topics {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 25px;
+      padding: 25px;
+    }
+
+    .topic-card {
+      width: 280px;
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .topic-picture {
+      height: 180px;
+      background: linear-gradient(135deg, #ffd66b, #ff9eb5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 85px;
+    }
+
+    .topic-content {
+      padding: 20px;
+    }
+
+    .topic-content h2 {
+      margin: 0;
+      font-size: 30px;
+      color: #3d74e7;
+    }
+
+    .topic-content p {
+      font-size: 20px;
+      margin: 8px 0 18px;
+    }
+
+    .start-button {
+      border: none;
+      background: #42c96b;
+      color: white;
+      font-size: 23px;
+      font-weight: bold;
+      padding: 13px 30px;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    .start-button:hover {
+      background: #32ad57;
+    }
+
+    .footer {
+      margin-top: 25px;
+      padding: 20px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 32px;
+      }
+
+      .speech {
+        font-size: 21px;
+      }
+
+      .topic-card {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🌈 ENGLISH FOR KIDS 🌈</h1>
+    <p>Learn English • Play • Sing • Have Fun!</p>
+  </div>
+
+  <div class="welcome">
+
+    <div class="character">
+      👧
+    </div>
+
+    <div class="speech">
+      Hello! I'm Mai. Let's learn English!
+    </div>
+
+  </div>
+
+  <div class="topics">
+
+    <div class="topic-card">
+
+      <div class="topic-picture">
+        👋
+      </div>
+
+      <div class="topic-content">
+
+        <h2>Greetings</h2>
+
+        <p>Chào hỏi</p>
+
+        <button class="start-button"
+                onclick="openLesson()">
+          ▶ Let's Go!
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+    English for Kids ❤️ Learning is fun!
+  </div>
+
+  <script>
+
+    function openLesson() {
+      alert("Hello! 👋 Bài học Greetings đã sẵn sàng!");
+    }
+
+  </script>
+
+</body>
+</html>
