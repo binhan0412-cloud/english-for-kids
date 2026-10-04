@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello - English for Kids</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #b9ecff, #fff4c7);
+      min-height: 100vh;
+      text-align: center;
+      color: #333;
+    }
+
+    .header {
+      padding: 25px 15px 10px;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #ff5c7a;
+      font-size: 38px;
+    }
+
+    .header p {
+      margin-top: 8px;
+      font-size: 18px;
+    }
+
+    .lesson-box {
+      width: 90%;
+      max-width: 850px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .mai {
+      font-size: 85px;
+      margin-bottom: 5px;
+    }
+
+    .speech {
+      display: inline-block;
+      background: #fff3a6;
+      border-radius: 25px;
+      padding: 15px 25px;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .word-title {
+      color: #3478f6;
+      font-size: 42px;
+      margin: 15px 0 5px;
+    }
+
+    .meaning {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .listen-button {
+      border: none;
+      background: #43c96b;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 14px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 8px;
+    }
+
+    .listen-button:hover {
+      transform: scale(1.05);
+    }
+
+    .sentence-box {
+      margin: 25px auto 10px;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 20px;
+      background: #f2f8ff;
+    }
+
+    .sentence {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ff5c7a;
+    }
+
+    .sentence-vi {
+      font-size: 18px;
+      margin-top: 8px;
+    }
+
+    .practice {
+      margin-top: 25px;
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 20px;
+    }
+
+    .practice h2 {
+      color: #8b5cf6;
+    }
+
+    .big-mic {
+      font-size: 55px;
+      margin: 10px;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin: 25px;
+      padding: 12px 22px;
+      border-radius: 25px;
+      background: #3478f6;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footer {
+      padding: 15px 0 30px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🌈 HELLO! 👋</h1>
+    <p>Lesson 1 • Greetings • Chào hỏi</p>
+  </div>
+
+  <div class="lesson-box">
+
+    <div class="mai">👧</div>
+
+    <div class="speech">
+      Hello! I'm Mai. 👋
+    </div>
+
+    <h2 class="word-title">Hello</h2>
+    <div class="meaning">Xin chào</div>
+
+    <button class="listen-button" onclick="speak('Hello')">
+      🔊 Listen
+    </button>
+
+    <div class="sentence-box">
+      <div class="sentence">Hello, I'm Mai.</div>
+      <div class="sentence-vi">Xin chào, mình là Mai.</div>
+
+      <button class="listen-button" onclick="speak(`Hello, I'm Mai.`)">
+        🔊 Listen
+      </button>
+    </div>
+
+    <div class="practice">
+      <h2>🎤 Your turn!</h2>
+      <p>Con hãy nghe và nói theo nhé!</p>
+
+      <div class="big-mic">🎙️</div>
+
+      <button class="listen-button" onclick="speak(`Hello, I'm Mai.`)">
+        ▶️ Listen again
+      </button>
+    </div>
+
+  </div>
+
+  <a class="back-button" href="index.html">
+    ⬅ Back
+  </a>
+
+  <div class="footer">
+    English for Kids ❤️ Learning is fun!
+  </div>
+
+  <script>
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'en-US';
+        speech.rate = 0.75;
+        speech.pitch = 1.1;
+
+        window.speechSynthesis.speak(speech);
+      } else {
+        alert("Trình duyệt này chưa hỗ trợ chức năng phát âm.");
+      }
+    }
+  </script>
+
+</body>
+</html>
