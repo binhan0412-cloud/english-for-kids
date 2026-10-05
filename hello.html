@@ -184,10 +184,10 @@
   </div>
 <div class="progress-box">
   <div class="progress-step active">⭐ Nghe</div>
-  <div class="progress-step">⭐ Học từ</div>
-  <div class="progress-step">⭐ Học câu</div>
-  <div class="progress-step">⭐ Nói</div>
-  <div class="progress-step">🎉 Xong</div>
+  <div class="progress-step" onclick="document.getElementById('vocabulary').scrollIntoView({behavior:'smooth'})">⭐ Học từ</div>
+ <div class="progress-step" onclick="document.getElementById('sentences').scrollIntoView({behavior:'smooth'})">⭐ Học câu</div>
+ <div class="progress-step" onclick="document.getElementById('speaking').scrollIntoView({behavior:'smooth'})">⭐ Nói</div>
+  <div class="progress-step" onclick="finishLesson()">🎉 Xong</div>
 </div>
   <div class="lesson-box">
 
@@ -205,7 +205,7 @@
       Hello! I'm Mai. 👋
     </div>
 
-    <h2 class="word-title">Hello</h2>
+   <h2 class="word-title" id="vocabulary">Hello</h2>
     <div class="meaning">Xin chào</div>
 
     <button class="listen-button" onclick="speak('Hello')">
@@ -229,7 +229,7 @@
         🔊 Listen
     </button>
 </div>
-    <div class="sentence-box">
+   <div class="sentence-box" id="sentences">
       <div class="sentence">Hello, I'm Mai.</div>
       <div class="sentence-vi">Xin chào, mình là Mai.</div>
 
@@ -238,7 +238,7 @@
       </button>
     </div>
 
-    <div class="practice">
+    <div class="practice" id="speaking">
       <h2>🎤 Your turn!</h2>
       <p>Con hãy nghe và nói theo nhé!</p>
 
@@ -331,6 +331,11 @@ function playSong() {
     };
 
     recognition.start();
+}
+
+    function finishLesson() {
+    alert("🎉 Great job!\nYou finished Lesson 1!\nCon đã hoàn thành Bài 1!");
+    speak("Great job! You finished Lesson 1!");
 }
   </script>
 
