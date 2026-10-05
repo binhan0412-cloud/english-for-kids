@@ -185,9 +185,21 @@
     width: 150px;
     max-width: 100%;
 }
+.sentences-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    align-items: stretch;
+    margin: 20px 0 30px;
+}
 
+.sentences-grid .sentence-box {
+    margin: 0;
+    width: auto;
+}
 @media (max-width: 600px) {
     .vocabulary-grid {
+        .sentences-grid 
         grid-template-columns: 1fr;
     }
 }
@@ -256,6 +268,7 @@
     </button>
 </div>
       </div>
+    <div class="sentences-grid">
    <div class="sentence-box" id="sentences">
      <img src="GRE_L01_S01.png" alt="Hello, I'm Mai." class="word-image">
       <div class="sentence">Hello, I'm Mai.</div>
@@ -286,7 +299,7 @@
         🔊 Listen
     </button>
 </div>
-
+</div>
     <div class="practice" id="speaking">
       <h2>🎤 Your turn!</h2>
       <p>Con hãy nghe và nói theo nhé!</p>
