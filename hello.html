@@ -169,6 +169,28 @@
   margin: 10px auto;
   display: block;
 }
+    .vocabulary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+    margin: 20px 0 30px;
+}
+
+.vocabulary-grid .word-item {
+    text-align: center;
+}
+
+.vocabulary-grid .word-image {
+    width: 150px;
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    .vocabulary-grid {
+        grid-template-columns: 1fr;
+    }
+}
     .footer {
       padding: 15px 0 30px;
       font-size: 14px;
@@ -205,12 +227,15 @@
       Hello! I'm Mai. 👋
     </div>
 
+    <div class="vocabulary-grid">
+    <div class="word-item">
    <h2 class="word-title" id="vocabulary">Hello</h2>
     <div class="meaning">Xin chào</div>
 
     <button class="listen-button" onclick="speak('Hello')">
       🔊 Listen
     </button>
+      </div>
 <div class="word-item">
   <img src="GRE_L01_W02.png" alt="Goodbye" class="word-image">
   <h2 class="word-title">Goodbye</h2>
@@ -229,6 +254,7 @@
         🔊 Listen
     </button>
 </div>
+      </div>
    <div class="sentence-box" id="sentences">
      <img src="GRE_L01_S01.png" alt="Hello, I'm Mai." class="word-image">
       <div class="sentence">Hello, I'm Mai.</div>
