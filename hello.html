@@ -397,7 +397,16 @@ const heard = spokenText
     .replace(/[.,!?]/g, "")
     .trim();
 
-if (heard === target) {
+if (
+    heard === target ||
+    (currentPractice === 0 && heard.includes("hello")) ||
+    (currentPractice === 1 &&
+        heard.includes("hello") &&
+        (heard.includes("mai") || heard.includes("am i") || heard.includes("my"))) ||
+    (currentPractice === 2 &&
+        heard.includes("goodbye") &&
+        (heard.includes("mai") || heard.includes("my")))
+) {
     result.innerHTML = "🌟 Great job! I heard: " + spokenText;
     speak("Great job!");
 
