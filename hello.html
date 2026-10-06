@@ -358,7 +358,13 @@ function playSong() {
         alert("Trình duyệt này chưa hỗ trợ chức năng phát âm.");
       }
     }
+const practiceItems = [
+    "Hello",
+    "Hello, I'm Mai.",
+    "Goodbye, Mai."
+];
 
+let currentPractice = 0;
     function startListening() {
     const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -375,26 +381,47 @@ function playSong() {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    result.innerHTML = "🎤 Listening... Say: Hello";
+    result.innerHTML = "🎤 Listening... Say: " + practiceItems[currentPractice];
 
     recognition.onresult = function(event) {
         const spokenText = event.results[0][0].transcript
             .toLowerCase()
             .trim();
 
-     if (spokenText === "hello") {
+    const target = practiceItems[currentPractice]
+    .toLowerCase()
+    .replace(/[.,!?]/g, "")
+    .trim();
+
+const heard = spokenText
+    .replace(/[.,!?]/g, "")
+    .trim();
+
+if (heard === target) {
     result.innerHTML = "🌟 Great job! I heard: " + spokenText;
     speak("Great job!");
-} else if (
-    spokenText === "helo" ||
-    spokenText === "hallo" ||
-    spokenText === "hullo"
-) {
-    result.innerHTML = "👍 Almost! I heard: " + spokenText + ". Try one more time!";
-    speak("Almost. Try one more time.");
+
+    currentPractice++;
+
+    if (currentPractice < practiceItems.length) {
+        document.getElementById("practice-text").innerHTML =
+            practiceItems[currentPractice];
+
+        setTimeout(() => {
+            speak(practiceItems[currentPractice]);
+        }, 1200);
+    } else {
+        result.innerHTML = "🎉 Excellent! You finished all speaking practice!";
+        speak("Excellent! You finished all speaking practice!");
+        currentPractice = 0;
+
+        document.getElementById("practice-text").innerHTML =
+            practiceItems[currentPractice];
+    }
+
 } else {
-    result.innerHTML = "😊 Let's try again! I heard: " + spokenText;
-    speak("Let's try again.");
+    result.innerHTML = "😊 I heard: " + spokenText + ". Try one more time!";
+    speak("Try one more time.");
 }
     };
 
