@@ -332,7 +332,12 @@
 
     <p id="record-status"></p>
 
-    <audio id="my-recording" controls style="display:none;"></audio>
+    <audio id="my-recording" style="display:none;"></audio>
+
+<button class="listen-button" id="play-recording-btn"
+        onclick="playMyRecording()" style="display:none;">
+    ▶️ Nghe giọng của con
+</button>
 </div>
     </div>
 
@@ -486,7 +491,7 @@ async function startRecording() {
             const audioURL = URL.createObjectURL(audioBlob);
 
             audio.src = audioURL;
-            audio.style.display = "block";
+            document.getElementById("play-recording-btn").style.display = "inline-block";
 
             status.innerHTML = "🎧 Con hãy nghe lại giọng của mình nhé!";
 
@@ -508,7 +513,11 @@ setTimeout(() => {
         status.innerHTML = "🎤 Hãy cho phép ứng dụng sử dụng micro nhé!";
     }
 }
-
+function playMyRecording() {
+    const audio = document.getElementById("my-recording");
+    audio.currentTime = 0;
+    audio.play();
+}
 function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
