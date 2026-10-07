@@ -498,7 +498,12 @@ async function startRecording() {
         status.innerHTML = "🔴 Đang ghi âm... Con hãy nói nhé!";
         recordBtn.disabled = true;
         stopBtn.disabled = false;
-
+// Tự động dừng ghi âm sau 5 giây
+setTimeout(() => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        stopRecording();
+    }
+}, 5000);
     } catch (error) {
         status.innerHTML = "🎤 Hãy cho phép ứng dụng sử dụng micro nhé!";
     }
