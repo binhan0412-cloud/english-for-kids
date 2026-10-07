@@ -338,6 +338,21 @@
         onclick="playMyRecording()" style="display:none;">
     ▶️ Nghe giọng của con
 </button>
+        <div style="margin-top:25px;">
+    <button class="finish-button" onclick="finishLesson()">
+        ⭐ Hoàn thành bài
+    </button>
+</div>
+        <div id="congrats-screen" style="display:none; margin-top:25px;">
+    <div style="font-size:40px;">🎉 ⭐ 🎉</div>
+    <h2>GREAT JOB!</h2>
+    <p>Con đã hoàn thành Bài 1 – Hello!</p>
+    <div style="font-size:32px;">⭐⭐⭐</div>
+
+    <a href="index.html" class="back-button">
+        🏠 Về trang chủ
+    </a>
+</div>
 </div>
     </div>
 
@@ -460,8 +475,13 @@ if (
 }
 
     function finishLesson() {
-    alert("🎉 Great job!\nYou finished Lesson 1!\nCon đã hoàn thành Bài 1!");
+    document.getElementById("congrats-screen").style.display = "block";
     speak("Great job! You finished Lesson 1!");
+
+    document.getElementById("congrats-screen").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 }
   let mediaRecorder;
 let audioChunks = [];
