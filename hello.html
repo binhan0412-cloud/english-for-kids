@@ -321,6 +321,19 @@
 </button>
 
 <p id="speech-result"></p>
+      <div class="recording-box">
+    <button class="listen-button" id="record-btn" onclick="startRecording()">
+        🔴 Record
+    </button>
+
+    <button class="listen-button" id="stop-btn" onclick="stopRecording()" disabled>
+        ⏹ Stop
+    </button>
+
+    <p id="record-status"></p>
+
+    <audio id="my-recording" controls style="display:none;"></audio>
+</div>
     </div>
 
   </div>
@@ -445,7 +458,60 @@ if (
     alert("🎉 Great job!\nYou finished Lesson 1!\nCon đã hoàn thành Bài 1!");
     speak("Great job! You finished Lesson 1!");
 }
-  </script>
+  let mediaRecorder;
+let audioChunks = [];
+let audioStream;
+
+async function startRecording() {
+    const status = document.getElementById("record-status");
+    const recordBtn = document.getElementById("record-btn");
+    const stopBtn = document.getElementById("stop-btn");
+    const audio = document.getElementById("my-recording");
+
+    try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        mediaRecorder = new MediaRecorder(audioStream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = function(event) {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = function() {
+            const audioBlob = new Blob(audioChunks, {
+                type: mediaRecorder.mimeType
+            });
+
+            const audioURL = URL.createObjectURL(audioBlob);
+
+            audio.src = audioURL;
+            audio.style.display = "block";
+
+            status.innerHTML = "🎧 Con hãy nghe lại giọng của mình nhé!";
+
+            audioStream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+
+        status.innerHTML = "🔴 Đang ghi âm... Con hãy nói nhé!";
+        recordBtn.disabled = true;
+        stopBtn.disabled = false;
+
+    } catch (error) {
+        status.innerHTML = "🎤 Hãy cho phép ứng dụng sử dụng micro nhé!";
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+
+        document.getElementById("record-btn").disabled = false;
+        document.getElementById("stop-btn").disabled = true;
+    }
+}</script>
 
 </body>
 </html>
