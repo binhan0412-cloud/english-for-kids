@@ -270,7 +270,11 @@ const playback = document.createElement("audio");
 playback.controls = true;
 playback.style.display = "none";
 playback.style.margin = "15px auto";
-
+const countdown = document.createElement("h2");
+countdown.textContent = "";
+countdown.style.color = "#ff5f7e";
+countdown.style.fontSize = "32px";
+countdown.style.margin = "15px 0";
 let recorder;
 let recordedChunks = [];
 let recordingUrl = null;
@@ -318,14 +322,28 @@ recordBtn.onclick = async () => {
         recordBtn.disabled = true;
         stopRecordBtn.disabled = false;
         playback.style.display = "none";
-// Tự động dừng ghi âm sau 5 giây
-setTimeout(() => {
-    if (recorder && recorder.state === "recording") {
+// Đồng hồ đếm ngược 5 giây
+let secondsLeft = 5;
+countdown.textContent = "⏱️ " + secondsLeft;
+
+const countdownTimer = setInterval(() => {
+    if (!recorder || recorder.state !== "recording") {
+        clearInterval(countdownTimer);
+        countdown.textContent = "";
+        return;
+    }
+
+    secondsLeft--;
+    countdown.textContent = "⏱️ " + secondsLeft;
+
+    if (secondsLeft <= 0) {
+        clearInterval(countdownTimer);
         recorder.stop();
         recordBtn.disabled = false;
         stopRecordBtn.disabled = true;
+        countdown.textContent = "🌟 Con hãy nghe lại nhé!";
     }
-}, 5000);
+}, 1000);
     } catch (error) {
         if (recordingStream) {
             recordingStream.getTracks().forEach(track => track.stop());
@@ -340,11 +358,13 @@ stopRecordBtn.onclick = () => {
         recorder.stop();
         recordBtn.disabled = false;
         stopRecordBtn.disabled = true;
+      countdown.textContent = "🌟 Con hãy nghe lại nhé!";
     }
 };
 
 wordPracticeBox.appendChild(recordBtn);
 wordPracticeBox.appendChild(stopRecordBtn);
+        wordPracticeBox.appendChild(countdown);
 wordPracticeBox.appendChild(playback);
 
 content.appendChild(wordPracticeBox);
