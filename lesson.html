@@ -166,6 +166,101 @@ songBox.appendChild(songPlayer);
           makeCard("💬 Mẫu câu", sentences, "SENTENCE", "SENTENCE_VI")
         );
 
+const practiceBox = document.createElement("div");
+practiceBox.className = "card";
+
+const practiceTitle = document.createElement("h2");
+practiceTitle.textContent = "🎤 Your turn! - Bé tập nói";
+practiceBox.appendChild(practiceTitle);
+
+const practiceText = document.createElement("h3");
+practiceText.textContent = "Con hãy nghe và nói theo nhé!";
+practiceBox.appendChild(practiceText);
+
+let currentSentence = 0;
+
+const targetText = document.createElement("h2");
+targetText.textContent = sentences.length
+    ? sentences[0].SENTENCE
+    : "Chưa có mẫu câu";
+practiceBox.appendChild(targetText);
+
+const listenBtn = document.createElement("button");
+listenBtn.textContent = "🔊 Nghe mẫu";
+listenBtn.onclick = () => {
+    if (sentences[currentSentence]) {
+        speak(sentences[currentSentence].SENTENCE);
+    }
+};
+practiceBox.appendChild(listenBtn);
+
+const speakBtn = document.createElement("button");
+speakBtn.textContent = "🎤 Bé nói";
+speakBtn.style.marginLeft = "10px";
+
+const result = document.createElement("p");
+practiceBox.appendChild(result);
+
+speakBtn.onclick = () => {
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        result.textContent = "Trình duyệt chưa hỗ trợ nhận diện giọng nói.";
+        return;
+    }
+
+    if (!sentences.length) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+
+    result.textContent = "🎤 Đang nghe con nói...";
+
+    recognition.onresult = (event) => {
+        const heard = event.results[0][0].transcript
+            .toLowerCase()
+            .replace(/[.,!?]/g, "")
+            .trim();
+
+        const target = sentences[currentSentence].SENTENCE
+            .toLowerCase()
+            .replace(/[.,!?]/g, "")
+            .trim();
+
+        if (heard === target) {
+            result.textContent = "🌟 Giỏi lắm! Con đã nói đúng!";
+            speak("Great job!");
+
+            currentSentence++;
+
+            if (currentSentence < sentences.length) {
+                targetText.textContent =
+                    sentences[currentSentence].SENTENCE;
+            } else {
+                result.textContent =
+                    "🎉 Tuyệt vời! Con đã hoàn thành phần luyện nói!";
+                speak("Excellent!");
+                currentSentence = 0;
+                targetText.textContent = sentences[0].SENTENCE;
+            }
+        } else {
+            result.textContent =
+                "😊 Cô nghe được: " + heard + ". Con thử lại nhé!";
+        }
+    };
+
+    recognition.onerror = () => {
+        result.textContent = "😊 Con thử nói lại nhé!";
+    };
+
+    recognition.start();
+};
+
+practiceBox.appendChild(speakBtn);
+content.appendChild(practiceBox);
+
       } catch (error) {
         content.textContent =
           "Không tải được dữ liệu. Hãy kiểm tra API và quyền truy cập.";
