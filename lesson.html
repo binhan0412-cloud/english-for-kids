@@ -229,7 +229,15 @@ speakBtn.onclick = () => {
             .replace(/[.,!?]/g, "")
             .trim();
 
-        if (heard === target) {
+        
+if (
+    heard === target ||
+    (target === "hello i'm mai" &&
+        ["hello am i", "hello i'm my", "hello my"].includes(heard)) ||
+    (target === "goodbye mai" &&
+        ["goodbye my", "goodbye may"].includes(heard))
+) {
+
             result.textContent = "🌟 Giỏi lắm! Con đã nói đúng!";
             speak("Great job!");
 
