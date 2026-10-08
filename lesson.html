@@ -70,7 +70,17 @@
       items.forEach(item => {
         const box = document.createElement("div");
         box.className = "word";
+const image = document.createElement("img");
 
+image.src = item.IMAGE || "";
+image.alt = item[textKey] || "";
+image.style.width = "150px";
+image.style.maxWidth = "100%";
+image.style.borderRadius = "15px";
+image.style.display = item.IMAGE ? "block" : "none";
+image.style.margin = "10px auto";
+
+box.appendChild(image);
         const name = document.createElement("h3");
         name.textContent = item[textKey];
 
