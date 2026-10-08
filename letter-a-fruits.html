@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello - English for Kids</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #b9ecff, #fff4c7);
+      min-height: 100vh;
+      text-align: center;
+      color: #333;
+    }
+
+    .header {
+      padding: 25px 15px 10px;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #ff5c7a;
+      font-size: 38px;
+    }
+
+    .header p {
+      margin-top: 8px;
+      font-size: 18px;
+    }
+
+    .lesson-box {
+      width: 90%;
+      max-width: 850px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+   .mai {
+    margin-bottom: 10px;
+}
+
+.mai img {
+    width: 180px;
+    max-width: 70%;
+    height: auto;
+    border-radius: 20px;
+}
+
+    .speech {
+      display: inline-block;
+      background: #fff3a6;
+      border-radius: 25px;
+      padding: 15px 25px;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .word-title {
+      color: #3478f6;
+      font-size: 42px;
+      margin: 15px 0 5px;
+    }
+
+    .meaning {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .listen-button {
+      border: none;
+      background: #43c96b;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 14px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 8px;
+    }
+
+    .listen-button:hover {
+      transform: scale(1.05);
+    }
+
+    .sentence-box {
+      margin: 25px auto 10px;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 20px;
+      background: #f2f8ff;
+    }
+
+    .sentence {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ff5c7a;
+    }
+
+    .sentence-vi {
+      font-size: 18px;
+      margin-top: 8px;
+    }
+
+    .practice {
+      margin-top: 25px;
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 20px;
+    }
+
+    .practice h2 {
+      color: #8b5cf6;
+    }
+
+    .big-mic {
+      font-size: 55px;
+      margin: 10px;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin: 25px;
+      padding: 12px 22px;
+      border-radius: 25px;
+      background: #3478f6;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+.progress-box {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 5px auto 15px;
+  padding: 8px;
+}
+
+.progress-step {
+  background: #ffffff;
+  border: 2px solid #dbeafe;
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #777;
+}
+
+.progress-step.active {
+  background: #ffd966;
+  border-color: #ffc107;
+  color: #333;
+}
+    .word-image {
+  width: 180px;
+  max-width: 70%;
+  height: auto;
+  border-radius: 20px;
+  margin: 10px auto;
+  display: block;
+}
+    .vocabulary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+    margin: 20px 0 30px;
+}
+
+.vocabulary-grid .word-item {
+    text-align: center;
+}
+
+.vocabulary-grid .word-image {
+    width: 150px;
+    max-width: 100%;
+}
+.sentences-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    align-items: stretch;
+    margin: 20px 0 30px;
+}
+
+.sentences-grid .sentence-box {
+    margin: 0;
+    width: auto;
+}
+    .finish-button {
+    background: #3dcc70;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.finish-button:hover {
+    transform: scale(1.05);
+}
+@media (max-width: 600px) {
+    .vocabulary-grid {
+        .sentences-grid 
+        grid-template-columns: 1fr;
+    }
+}
+    #practice-text {
+    display: inline-block;
+    background: #fff3a6;
+    color: #ff5f7e;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 8px 22px;
+    border-radius: 20px;
+    margin: 10px 0 15px;
+}
+    .footer {
+      padding: 15px 0 30px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🌈 HELLO! 👋</h1>
+    <p>Lesson 1 • Greetings • Chào hỏi</p>
+  </div>
+<div class="progress-box">
+  <div class="progress-step active">⭐ Nghe</div>
+  <div class="progress-step" onclick="document.getElementById('vocabulary').scrollIntoView({behavior:'smooth'})">⭐ Học từ</div>
+ <div class="progress-step" onclick="document.getElementById('sentences').scrollIntoView({behavior:'smooth'})">⭐ Học câu</div>
+ <div class="progress-step" onclick="document.getElementById('speaking').scrollIntoView({behavior:'smooth'})">⭐ Nói</div>
+  <div class="progress-step" onclick="finishLesson()">🎉 Xong</div>
+</div>
+  <div class="lesson-box">
+
+  <div class="mai"><img src="GRE_L01.png" alt="Mai"></div>
+
+    <div class="song-box">
+  <button class="listen-button" onclick="playSong()">
+    🎵 Hello Song
+  </button>
+
+  <audio id="hello-song" src="GRE_L01_SONG.mp3"></audio>
+</div>
+
+    <div class="speech">
+      Hello! I'm Mai. 👋
+    </div>
+
+    <div class="vocabulary-grid">
+    <div class="word-item">
+      <img src="GRE_L01_W01.png" alt="Hello" class="word-image">
+   <h2 class="word-title" id="vocabulary">Hello</h2>
+    <div class="meaning">Xin chào</div>
+
+    <button class="listen-button" onclick="speak('Hello')">
+      🔊 Listen
+    </button>
+      </div>
+<div class="word-item">
+  <img src="GRE_L01_W02.png" alt="Goodbye" class="word-image">
+  <h2 class="word-title">Goodbye</h2>
+  <div class="meaning">Tạm biệt</div>
+
+  <button class="listen-button" onclick="speak('Goodbye')">
+    🔊 Listen
+  </button>
+</div>
+    <div class="word-item">
+    <img src="GRE_L01_W03.png" alt="Friend" class="word-image">
+    <h2 class="word-title">Friend</h2>
+    <div class="meaning">Bạn bè</div>
+
+    <button class="listen-button" onclick="speak('Friend')">
+        🔊 Listen
+    </button>
+</div>
+      </div>
+    <div class="sentences-grid">
+   <div class="sentence-box" id="sentences">
+     <img src="GRE_L01_S01.png" alt="Hello, I'm Mai." class="word-image">
+      <div class="sentence">Hello, I'm Mai.</div>
+      <div class="sentence-vi">Xin chào, mình là Mai.</div>
+
+      <button class="listen-button" onclick="speak(`Hello, I'm Mai.`)">
+        🔊 Listen
+      </button>
+    </div>
+
+    <div class="sentence-box">
+    <img src="GRE_L01_S02.png" alt="Goodbye, Mai." class="word-image">
+
+    <div class="sentence">Goodbye, Mai.</div>
+    <div class="sentence-vi">Tạm biệt, Mai.</div>
+
+    <button class="listen-button" onclick="speak('Goodbye, Mai.')">
+        🔊 Listen
+    </button>
+</div>
+    <div class="sentence-box">
+    <img src="GRE_L01_S03.png" alt="Hello, my friend!" class="word-image">
+
+    <div class="sentence">Hello, my friend!</div>
+    <div class="sentence-vi">Xin chào, bạn của mình!</div>
+
+    <button class="listen-button" onclick="speak('Hello, my friend!')">
+        🔊 Listen
+    </button>
+</div>
+</div>
+    <div class="practice" id="speaking">
+      <h2>🎤 Your turn!</h2>
+      <p>Con hãy nghe và nói theo nhé!</p>
+<div id="practice-text">Hello</div>
+      <div class="big-mic">🎙️</div>
+
+      <button class="listen-button" onclick="startListening()">
+    🎤 Speak
+</button>
+
+<p id="speech-result"></p>
+      <div class="recording-box">
+    <button class="listen-button" id="record-btn" onclick="startRecording()">
+        🔴 Record
+    </button>
+
+    <button class="listen-button" id="stop-btn" onclick="stopRecording()" disabled>
+        ⏹ Stop
+    </button>
+
+    <p id="record-status"></p>
+
+    <audio id="my-recording" hidden></audio>
+
+<button class="listen-button" id="play-recording-btn"
+        onclick="playMyRecording()" style="display:none;">
+    ▶️ Nghe giọng của con
+</button>
+        <div style="margin-top:25px;">
+    <button class="finish-button" onclick="finishLesson()">
+        ⭐ Hoàn thành bài
+    </button>
+</div>
+        <div id="congrats-screen" style="display:none; margin-top:25px;">
+    <div style="font-size:40px;">🎉 ⭐ 🎉</div>
+    <h2>GREAT JOB!</h2>
+    <p>Con đã hoàn thành Bài 1 – Hello!</p>
+    <div style="font-size:32px;">⭐⭐⭐</div>
+
+    <a href="index.html" class="back-button">
+        🏠 Về trang chủ
+    </a>
+</div>
+</div>
+    </div>
+
+  </div>
+
+  <a class="back-button" href="index.html">
+    ⬅ Back
+  </a>
+
+  <div class="footer">
+    English for Kids ❤️ Learning is fun!
+  </div>
+
+  <script>
+function playSong() {
+  const song = document.getElementById("hello-song");
+
+  if (song.paused) {
+    song.play();
+  } else {
+    song.pause();
+    song.currentTime = 0;
+  }
+}
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'en-US';
+        speech.rate = 0.75;
+        speech.pitch = 1.1;
+
+        window.speechSynthesis.speak(speech);
+      } else {
+        alert("Trình duyệt này chưa hỗ trợ chức năng phát âm.");
+      }
+    }
+const practiceItems = [
+    "Hello",
+    "Hello, I'm Mai.",
+    "Goodbye, Mai."
+];
+
+let currentPractice = 0;
+    function startListening() {
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const result = document.getElementById("speech-result");
+
+    if (!SpeechRecognition) {
+        result.innerHTML = "Trình duyệt chưa hỗ trợ nhận diện giọng nói.";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    result.innerHTML = "🎤 Listening... Say: " + practiceItems[currentPractice];
+
+    recognition.onresult = function(event) {
+        const spokenText = event.results[0][0].transcript
+            .toLowerCase()
+            .trim();
+
+    const target = practiceItems[currentPractice]
+    .toLowerCase()
+    .replace(/[.,!?]/g, "")
+    .trim();
+
+const heard = spokenText
+    .replace(/[.,!?]/g, "")
+    .trim();
+
+if (
+    heard === target ||
+    (currentPractice === 0 && heard.includes("hello")) ||
+    (currentPractice === 1 &&
+        heard.includes("hello") &&
+        (heard.includes("mai") || heard.includes("am i") || heard.includes("my"))) ||
+    (currentPractice === 2 &&
+        heard.includes("goodbye") &&
+        (heard.includes("mai") || heard.includes("my")))
+) {
+    result.innerHTML = "🌟 Great job! I heard: " + spokenText;
+    speak("Great job!");
+
+    currentPractice++;
+
+    if (currentPractice < practiceItems.length) {
+        document.getElementById("practice-text").innerHTML =
+            practiceItems[currentPractice];
+
+        setTimeout(() => {
+            speak(practiceItems[currentPractice]);
+        }, 1200);
+    } else {
+        result.innerHTML = "🎉 Excellent! You finished all speaking practice!";
+        speak("Excellent! You finished all speaking practice!");
+        currentPractice = 0;
+
+        document.getElementById("practice-text").innerHTML =
+            practiceItems[currentPractice];
+    }
+
+} else {
+    result.innerHTML = "😊 I heard: " + spokenText + ". Try one more time!";
+    speak("Try one more time.");
+}
+    };
+
+    recognition.onerror = function() {
+        result.innerHTML = "😊 Please try again.";
+    };
+
+    recognition.start();
+}
+
+    function finishLesson() {
+    document.getElementById("congrats-screen").style.display = "block";
+    speak("Great job! You finished Lesson 1!");
+
+    document.getElementById("congrats-screen").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+  let mediaRecorder;
+let audioChunks = [];
+let audioStream;
+
+async function startRecording() {
+    const status = document.getElementById("record-status");
+    const recordBtn = document.getElementById("record-btn");
+    const stopBtn = document.getElementById("stop-btn");
+    const audio = document.getElementById("my-recording");
+
+    try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        mediaRecorder = new MediaRecorder(audioStream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = function(event) {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = function() {
+            const audioBlob = new Blob(audioChunks, {
+                type: mediaRecorder.mimeType
+            });
+
+            const audioURL = URL.createObjectURL(audioBlob);
+
+            audio.src = audioURL;
+            document.getElementById("play-recording-btn").style.display = "inline-block";
+
+            status.innerHTML = "🎧 Con hãy nghe lại giọng của mình nhé!";
+
+            audioStream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+
+        status.innerHTML = "🔴 Đang ghi âm... Con hãy nói nhé!";
+        recordBtn.disabled = true;
+        stopBtn.disabled = false;
+// Tự động dừng ghi âm sau 5 giây
+setTimeout(() => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        stopRecording();
+    }
+}, 5000);
+    } catch (error) {
+        status.innerHTML = "🎤 Hãy cho phép ứng dụng sử dụng micro nhé!";
+    }
+}
+function playMyRecording() {
+    const audio = document.getElementById("my-recording");
+    audio.currentTime = 0;
+    audio.play();
+}
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+
+        document.getElementById("record-btn").disabled = false;
+        document.getElementById("stop-btn").disabled = true;
+    }
+}</script>
+
+</body>
+</html>
