@@ -132,6 +132,26 @@ box.appendChild(image);
         title.textContent = lesson.LESSON_NAME || "Bài học";
         content.appendChild(title);
 
+const songUrl = lesson.SONG_VIDEO || lesson.SONG || "";
+
+if (songUrl) {
+    const songBox = document.createElement("div");
+    songBox.className = "card";
+
+    const songTitle = document.createElement("h2");
+    songTitle.textContent = "🎵 Let's sing! - Cùng hát nào!";
+    songBox.appendChild(songTitle);
+
+    const songLink = document.createElement("a");
+    songLink.href = songUrl;
+    songLink.target = "_blank";
+    songLink.rel = "noopener noreferrer";
+    songLink.textContent = "▶️ Mở bài hát";
+    songBox.appendChild(songLink);
+
+    content.appendChild(songBox);
+}
+
         content.appendChild(
           makeCard("🍎 Từ vựng", words, "WORD", "WORD_VI")
         );
