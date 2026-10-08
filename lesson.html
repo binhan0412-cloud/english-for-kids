@@ -72,7 +72,9 @@
         box.className = "word";
 const image = document.createElement("img");
 
-image.src = item.IMAGE || "";
+image.src = item.IMAGE
+    ? new URL(item.IMAGE, window.location.href).href
+    : "";
 image.alt = item[textKey] || "";
 image.style.width = "150px";
 image.style.maxWidth = "100%";
