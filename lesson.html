@@ -162,6 +162,103 @@ songBox.appendChild(songPlayer);
           makeCard("🍎 Từ vựng", words, "WORD", "WORD_VI")
         );
 
+const wordPracticeBox = document.createElement("div");
+wordPracticeBox.className = "card";
+
+const wordPracticeTitle = document.createElement("h2");
+wordPracticeTitle.textContent = "🎤 Bé luyện đọc từ vựng";
+wordPracticeBox.appendChild(wordPracticeTitle);
+
+const wordPracticeGuide = document.createElement("p");
+wordPracticeGuide.textContent = "Con hãy nghe và đọc từng từ nhé!";
+wordPracticeBox.appendChild(wordPracticeGuide);
+
+let currentWord = 0;
+
+const wordTarget = document.createElement("h2");
+wordTarget.textContent = words.length
+    ? words[0].WORD
+    : "Chưa có từ vựng";
+wordPracticeBox.appendChild(wordTarget);
+
+const wordListenBtn = document.createElement("button");
+wordListenBtn.textContent = "🔊 Nghe mẫu";
+wordListenBtn.onclick = () => {
+    if (words[currentWord]) {
+        speak(words[currentWord].WORD);
+    }
+};
+wordPracticeBox.appendChild(wordListenBtn);
+
+const wordSpeakBtn = document.createElement("button");
+wordSpeakBtn.textContent = "🎤 Bé đọc";
+wordSpeakBtn.style.marginLeft = "10px";
+
+const wordResult = document.createElement("p");
+wordPracticeBox.appendChild(wordResult);
+
+wordSpeakBtn.onclick = () => {
+    if (!words.length) return;
+
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        wordResult.textContent = "Trình duyệt chưa hỗ trợ nhận diện giọng nói.";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    wordResult.textContent = "🎤 Cô đang nghe con đọc...";
+    wordSpeakBtn.disabled = true;
+
+    recognition.onresult = (event) => {
+        const heard = event.results[0][0].transcript
+            .toLowerCase().replace(/[.,!?]/g, "").trim();
+
+        const target = words[currentWord].WORD
+            .toLowerCase().replace(/[.,!?]/g, "").trim();
+
+        if (heard === target) {
+            wordResult.textContent = "🌟 Giỏi lắm! Con đọc đúng rồi!";
+            speak("Great job!");
+
+            currentWord++;
+
+            if (currentWord < words.length) {
+                wordTarget.textContent = words[currentWord].WORD;
+            } else {
+                wordResult.textContent =
+                    "🎉 Tuyệt vời! Con đã hoàn thành phần luyện đọc từ vựng!";
+                speak("Excellent!");
+                currentWord = 0;
+                wordTarget.textContent = words[0].WORD;
+            }
+        } else {
+            wordResult.textContent =
+                "😊 Cô nghe được: " + heard + ". Con thử lại nhé!";
+        }
+    };
+
+    recognition.onerror = () => {
+        wordResult.textContent = "😊 Con thử đọc lại nhé!";
+        wordSpeakBtn.disabled = false;
+    };
+
+    recognition.onend = () => {
+        wordSpeakBtn.disabled = false;
+    };
+
+    recognition.start();
+};
+
+wordPracticeBox.appendChild(wordSpeakBtn);
+content.appendChild(wordPracticeBox);
+
         content.appendChild(
           makeCard("💬 Mẫu câu", sentences, "SENTENCE", "SENTENCE_VI")
         );
