@@ -318,7 +318,14 @@ recordBtn.onclick = async () => {
         recordBtn.disabled = true;
         stopRecordBtn.disabled = false;
         playback.style.display = "none";
-
+// Tự động dừng ghi âm sau 5 giây
+setTimeout(() => {
+    if (recorder && recorder.state === "recording") {
+        recorder.stop();
+        recordBtn.disabled = false;
+        stopRecordBtn.disabled = true;
+    }
+}, 5000);
     } catch (error) {
         if (recordingStream) {
             recordingStream.getTracks().forEach(track => track.stop());
