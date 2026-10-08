@@ -257,6 +257,89 @@ wordSpeakBtn.onclick = () => {
 };
 
 wordPracticeBox.appendChild(wordSpeakBtn);
+        
+const recordBtn = document.createElement("button");
+recordBtn.textContent = "🔴 Ghi âm";
+recordBtn.style.margin = "10px";
+
+const stopRecordBtn = document.createElement("button");
+stopRecordBtn.textContent = "⏹️ Dừng ghi";
+stopRecordBtn.disabled = true;
+
+const playback = document.createElement("audio");
+playback.controls = true;
+playback.style.display = "none";
+playback.style.margin = "15px auto";
+
+let recorder;
+let recordedChunks = [];
+let recordingUrl = null;
+let recordingStream = null;
+
+recordBtn.onclick = async () => {
+    try {
+        if (!navigator.mediaDevices?.getUserMedia ||
+            !window.MediaRecorder) {
+            alert("Trình duyệt chưa hỗ trợ ghi âm.");
+            return;
+        }
+
+        recordingStream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        recordedChunks = [];
+        recorder = new MediaRecorder(recordingStream);
+
+        recorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        recorder.onstop = () => {
+            const blob = new Blob(recordedChunks, {
+                type: recorder.mimeType
+            });
+
+            if (recordingUrl) {
+                URL.revokeObjectURL(recordingUrl);
+            }
+
+            recordingUrl = URL.createObjectURL(blob);
+            playback.src = recordingUrl;
+            playback.style.display = "block";
+
+            recordingStream.getTracks().forEach(track => track.stop());
+            recordingStream = null;
+        };
+
+        recorder.start();
+        recordBtn.disabled = true;
+        stopRecordBtn.disabled = false;
+        playback.style.display = "none";
+
+    } catch (error) {
+        if (recordingStream) {
+            recordingStream.getTracks().forEach(track => track.stop());
+            recordingStream = null;
+        }
+        alert("Chị hãy cho phép ứng dụng sử dụng micro nhé!");
+    }
+};
+
+stopRecordBtn.onclick = () => {
+    if (recorder && recorder.state === "recording") {
+        recorder.stop();
+        recordBtn.disabled = false;
+        stopRecordBtn.disabled = true;
+    }
+};
+
+wordPracticeBox.appendChild(recordBtn);
+wordPracticeBox.appendChild(stopRecordBtn);
+wordPracticeBox.appendChild(playback);
+
 content.appendChild(wordPracticeBox);
 
         content.appendChild(
