@@ -160,41 +160,95 @@
 
   </div>
 
-  <div class="topics">
-
-    <div class="topic-card">
-
-      <div class="topic-picture">
-        👋
-      </div>
-
-      <div class="topic-content">
-
-        <h2>Greetings</h2>
-
-        <p>Chào hỏi</p>
-
-        <button class="start-button"
-                onclick="openLesson()">
-          ▶ Let's Go!
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
+  <div class="topics" id="topics">
+    <p>⏳ Đang tải chủ đề và bài học...</p>
+</div>
 
   <div class="footer">
     English for Kids ❤️ Learning is fun!
   </div>
 
-  <script>
+  <<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz8BnZPEWIprXuWaUq9LX1whMdw67C30WYD6QL3YgGixgVM7_aP-eWnMOHB0PvYC3XzWw/exec";
 
-   function openLesson() {
-    window.location.href = "lesson.html?lesson=GRE_L01";
+async function loadHomePage() {
+    const topicsBox = document.getElementById("topics");
+
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+            throw new Error("Không tải được dữ liệu");
+        }
+
+        const data = await response.json();
+
+        const isActive = value =>
+            value === true ||
+            String(value).toUpperCase() === "TRUE";
+
+        const topics = (data.TOPICS || [])
+            .filter(topic => isActive(topic.ACTIVE))
+            .sort((a, b) => Number(a.ORDER) - Number(b.ORDER));
+
+        const lessons = (data.LESSONS || [])
+            .filter(lesson => isActive(lesson.ACTIVE))
+            .sort((a, b) => Number(a.ORDER) - Number(b.ORDER));
+
+        topicsBox.innerHTML = "";
+
+        topics.forEach(topic => {
+            const card = document.createElement("div");
+            card.className = "topic-card";
+
+            const content = document.createElement("div");
+            content.className = "topic-content";
+
+            const title = document.createElement("h2");
+            title.textContent = topic.TOPIC_NAME;
+
+            const vietnamese = document.createElement("p");
+            vietnamese.textContent = topic.TOPIC_NAME_VI;
+
+            content.appendChild(title);
+            content.appendChild(vietnamese);
+
+            const topicLessons = lessons.filter(
+                lesson => String(lesson.TOPIC_ID) === String(topic.TOPIC_ID)
+            );
+
+            topicLessons.forEach(lesson => {
+                const button = document.createElement("button");
+                button.className = "start-button";
+                button.style.margin = "8px";
+
+                button.textContent = "📖 " + lesson.LESSON_NAME;
+
+                button.onclick = () => {
+                    window.location.href =
+                        "lesson.html?lesson=" +
+                        encodeURIComponent(lesson.LESSON_ID);
+                };
+
+                content.appendChild(button);
+            });
+
+            card.appendChild(content);
+            topicsBox.appendChild(card);
+        });
+
+        if (topics.length === 0) {
+            topicsBox.textContent = "Chưa có chủ đề nào.";
+        }
+
+    } catch (error) {
+        topicsBox.textContent =
+            "Không tải được danh sách bài học. Vui lòng thử lại.";
+        console.error(error);
+    }
 }
-  </script>
+
+loadHomePage();
+</script>
 
 </body>
 </html>
