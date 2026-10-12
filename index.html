@@ -229,6 +229,31 @@ if (topic.TOPIC_IMAGE) {
             );
 
             topicLessons.forEach(lesson => {
+              // Tạo thẻ riêng cho từng bài học
+const lessonCard = document.createElement("div");
+lessonCard.style.margin = "15px 0";
+lessonCard.style.padding = "12px";
+lessonCard.style.background = "#fff9df";
+lessonCard.style.borderRadius = "18px";
+
+// Lấy ảnh bài học từ Google Sheets
+if (lesson.LESSON_IMAGE) {
+    const lessonImage = document.createElement("img");
+    lessonImage.src = lesson.LESSON_IMAGE;
+    lessonImage.alt = lesson.LESSON_NAME;
+    lessonImage.style.width = "100%";
+    lessonImage.style.height = "130px";
+    lessonImage.style.objectFit = "cover";
+    lessonImage.style.borderRadius = "14px";
+    lessonImage.style.marginBottom = "10px";
+
+    lessonCard.appendChild(lessonImage);
+}
+
+// Hiển thị tên bài học bằng tiếng Việt
+const lessonNameVi = document.createElement("p");
+lessonNameVi.textContent = lesson.LESSON_NAME_VI || "";
+lessonCard.appendChild(lessonNameVi);
                 const button = document.createElement("button");
                 button.className = "start-button";
                 button.style.margin = "8px";
@@ -241,7 +266,8 @@ if (topic.TOPIC_IMAGE) {
                         encodeURIComponent(lesson.LESSON_ID);
                 };
 
-                content.appendChild(button);
+                lessonCard.appendChild(button);
+content.appendChild(lessonCard);
             });
 
             card.appendChild(content);
