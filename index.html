@@ -199,7 +199,19 @@ async function loadHomePage() {
         topics.forEach(topic => {
             const card = document.createElement("div");
             card.className = "topic-card";
+// Hiển thị hình ảnh chủ đề từ Google Sheets
+if (topic.TOPIC_IMAGE) {
+    const topicImage = document.createElement("img");
+    topicImage.src = topic.TOPIC_IMAGE;
+    topicImage.alt = topic.TOPIC_NAME;
+    topicImage.style.width = "100%";
+    topicImage.style.height = "160px";
+    topicImage.style.objectFit = "cover";
+    topicImage.style.borderRadius = "18px";
+    topicImage.style.marginBottom = "12px";
 
+    card.appendChild(topicImage);
+}
             const content = document.createElement("div");
             content.className = "topic-content";
 
