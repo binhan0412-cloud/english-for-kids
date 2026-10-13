@@ -91,7 +91,25 @@ box.appendChild(image);
 
         const button = document.createElement("button");
         button.textContent = "🔊 Listen";
-        button.onclick = () => speak(item[textKey]);
+       button.onclick = () => {
+    const audioUrl = String(item.AUDIO || "").trim();
+
+    if (audioUrl) {
+        speechSynthesis.cancel();
+
+        const audio = new Audio(audioUrl);
+
+        audio.onerror = () => {
+            speak(item[textKey]);
+        };
+
+        audio.play().catch(() => {
+            speak(item[textKey]);
+        });
+    } else {
+        speak(item[textKey]);
+    }
+};
 
         box.append(name, meaning, button);
         card.appendChild(box);
