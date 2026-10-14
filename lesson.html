@@ -161,11 +161,14 @@ if (songUrl) {
     songBox.appendChild(songTitle);
 
     
-const songPlayer = document.createElement("audio");
+const songPlayer = document.createElement("video");
 songPlayer.controls = true;
 songPlayer.preload = "none";
 songPlayer.style.width = "100%";
-songPlayer.style.maxWidth = "400px";
+songPlayer.style.maxWidth = "650px";
+songPlayer.style.aspectRatio = "16 / 9";
+songPlayer.style.objectFit = "contain";
+songPlayer.style.borderRadius = "12px";
 
 songPlayer.src = songUrl;
 
