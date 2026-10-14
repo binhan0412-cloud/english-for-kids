@@ -49,7 +49,7 @@
       "https://script.google.com/macros/s/AKfycbz8BnZPEWIprXuWaUq9LX1whMdw67C30WYD6QL3YgGixgVM7_aP-eWnMOHB0PvYC3XzWw/exec";
 
     const params = new URLSearchParams(location.search);
-    const lessonId = params.get("id") || "GRE_L01";
+    const lessonId = params.get("lesson") || params.get("id") || "GRE_L01";
 
     function speak(text) {
       speechSynthesis.cancel();
