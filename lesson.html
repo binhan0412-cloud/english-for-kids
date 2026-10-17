@@ -323,6 +323,7 @@ wordSpeakBtn.onclick = () => {
    recognition.onerror = () => {
     wordResult.textContent =
         "😊 Cô chưa nghe rõ. Con thử đọc lại nhé!";
+    speakVietnamese("Cô chưa nghe rõ. Con thử lại lần nữa nhé!");
 };
 
     recognition.onend = () => {
