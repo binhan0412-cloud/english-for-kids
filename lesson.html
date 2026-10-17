@@ -245,6 +245,7 @@ let pronunciationAttempts = 0;
             .toLowerCase().replace(/[.,!?]/g, "").trim();
 
         if (heard === target) {
+          pronunciationAttempts = 0;
             wordResult.textContent = "🌟 Giỏi lắm! Con đọc đúng rồi!";
             speak("Great job!");
 
