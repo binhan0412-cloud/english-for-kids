@@ -141,7 +141,10 @@ box.appendChild(image);
 
         const button = document.createElement("button");
         button.textContent = "🔊 Listen";
-        button.onclick = () => playLearningAudio(item.AUDIO, item[textKey]);
+        button.onclick = () => {
+  alert("Đường dẫn âm thanh: " + (item.AUDIO || "KHÔNG CÓ"));
+  playLearningAudio(item.AUDIO, item[textKey]);
+};
 
 box.append(name, meaning, button);
         card.appendChild(box);
