@@ -59,6 +59,56 @@
       speechSynthesis.speak(voice);
     }
 
+    // Chuẩn hóa câu nói để tránh bắt lỗi do dấu câu hoặc khoảng trắng.
+    function normalizeSpeech(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/[’‘]/g, "'")
+        .replace(/[^a-z0-9'\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    // Chỉ phát giọng máy một lần nếu tệp âm thanh bị lỗi.
+    function playLearningAudio(url, fallbackText) {
+      const source = String(url || "").trim();
+      if (!source) {
+        speak(fallbackText);
+        return;
+      }
+      speechSynthesis.cancel();
+      const audio = new Audio(source);
+      let fallbackUsed = false;
+      const fallback = () => {
+        if (fallbackUsed) return;
+        fallbackUsed = true;
+        speak(fallbackText);
+      };
+      audio.addEventListener("error", fallback, { once: true });
+      audio.play().catch(fallback);
+    }
+
+    // Cho phép một số khác biệt nhỏ trong nhận diện tiếng Anh của trẻ.
+    function speechMatches(heard, target) {
+      const a = normalizeSpeech(heard);
+      const b = normalizeSpeech(target);
+      if (!a || !b) return false;
+      if (a === b || a.replace(/'/g, "") === b.replace(/'/g, "")) return true;
+      // Không tự động chấp nhận từ khác hẳn; chỉ nới lỏng cho câu nhiều từ.
+      const aWords = a.split(" ");
+      const bWords = b.split(" ");
+      if (bWords.length < 3) return false;
+      const common = bWords.filter((w, i) => aWords[i] === w).length;
+      return aWords.length === bWords.length && common >= bWords.length - 1;
+    }
+
+    function isActive(item) {
+      const value = item.ACTIVE;
+      return value === undefined || value === null || value === "" ||
+        value === true || String(value).trim().toUpperCase() === "TRUE" ||
+        String(value).trim() === "1";
+    }
+
     function makeCard(title, items, textKey, viKey) {
       const card = document.createElement("div");
       card.className = "card";
@@ -91,27 +141,9 @@ box.appendChild(image);
 
         const button = document.createElement("button");
         button.textContent = "🔊 Listen";
-       button.onclick = () => {
-    const audioUrl = String(item.AUDIO || "").trim();
+        button.onclick = () => playLearningAudio(item.AUDIO, item[textKey]);
 
-    if (audioUrl) {
-        speechSynthesis.cancel();
-
-        const audio = new Audio(audioUrl);
-
-        audio.onerror = () => {
-            speak(item[textKey]);
-        };
-
-        audio.play().catch(() => {
-            speak(item[textKey]);
-        });
-    } else {
-        speak(item[textKey]);
-    }
-};
-
-        box.append(name, meaning, button);
+box.append(name, meaning, button);
         card.appendChild(box);
       });
 
@@ -128,7 +160,7 @@ box.appendChild(image);
         const data = await response.json();
 
         const lesson = (data.LESSONS || []).find(
-          item => item.LESSON_ID === lessonId
+          item => item.LESSON_ID === lessonId && isActive(item)
         );
 
         if (!lesson) {
@@ -137,11 +169,11 @@ box.appendChild(image);
         }
 
         const words = (data.VOCABULARY || []).filter(
-          item => item.LESSON_ID === lessonId
+          item => item.LESSON_ID === lessonId && isActive(item)
         );
 
         const sentences = (data.SENTENCES || []).filter(
-          item => item.LESSON_ID === lessonId
+          item => item.LESSON_ID === lessonId && isActive(item)
         );
 
         content.replaceChildren();
@@ -232,60 +264,45 @@ wordSpeakBtn.onclick = () => {
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-let pronunciationAttempts = 0;
+    recognition.maxAlternatives = 3;
     wordResult.textContent = "🎤 Cô đang nghe con đọc...";
     wordSpeakBtn.disabled = true;
 
     recognition.onresult = (event) => {
-        const heard = event.results[0][0].transcript
-            .toLowerCase().replace(/[.,!?]/g, "").trim();
+        if (!words[currentWord]) return;
+        const alternatives = Array.from(event.results[0] || [])
+            .map(result => result.transcript);
+        const heard = alternatives[0] || "";
+        const target = words[currentWord].WORD;
+        const correct = alternatives.some(text => speechMatches(text, target));
 
-        const target = words[currentWord].WORD
-            .toLowerCase().replace(/[.,!?]/g, "").trim();
-
-        if (heard === target) {
-          pronunciationAttempts = 0;
+        if (correct) {
+            pronunciationAttempts = 0;
             wordResult.textContent = "🌟 Giỏi lắm! Con đọc đúng rồi!";
             speak("Great job!");
-
-            currentWord++;
-
-            if (currentWord < words.length) {
-                wordTarget.textContent = words[currentWord].WORD;
-            } else {
-                wordResult.textContent =
-                    "🎉 Tuyệt vời! Con đã hoàn thành phần luyện đọc từ vựng!";
-                speak("Excellent!");
-                currentWord = 0;
-                wordTarget.textContent = words[0].WORD;
-            }
         } else {
-    pronunciationAttempts++;
-
-    if (pronunciationAttempts >= 3) {
-        wordResult.textContent =
-            "🌷 Con đã rất cố gắng! Mình học từ tiếp theo nhé!";
+            pronunciationAttempts++;
+            if (pronunciationAttempts < 3) {
+                wordResult.textContent =
+                    "😊 Cô nghe được: " + heard +
+                    ". Con thử lại nhé! (" + pronunciationAttempts + "/3 lần)";
+                return;
+            }
+            pronunciationAttempts = 0;
+            wordResult.textContent =
+                "🌷 Con đã rất cố gắng! Mình học từ tiếp theo nhé!";
+        }
 
         currentWord++;
-        pronunciationAttempts = 0;
-
         if (currentWord < words.length) {
             wordTarget.textContent = words[currentWord].WORD;
         } else {
             wordResult.textContent =
                 "🎉 Tuyệt vời! Con đã hoàn thành phần luyện đọc từ vựng!";
+            speak("Excellent!");
             currentWord = 0;
             wordTarget.textContent = words[0].WORD;
         }
-
-    } else {
-        wordResult.textContent =
-            "😊 Cô nghe được: " + heard +
-            ". Con thử lại nhé! (" +
-            pronunciationAttempts + "/3 lần)";
-    }
-}
     };
 
     recognition.onerror = () => {
@@ -323,6 +340,7 @@ let recorder;
 let recordedChunks = [];
 let recordingUrl = null;
 let recordingStream = null;
+let countdownTimer = null;
 
 recordBtn.onclick = async () => {
     try {
@@ -346,6 +364,7 @@ recordBtn.onclick = async () => {
         };
 
         recorder.onstop = () => {
+            clearInterval(countdownTimer);
             const blob = new Blob(recordedChunks, {
                 type: recorder.mimeType
             });
@@ -367,10 +386,11 @@ recordBtn.onclick = async () => {
         stopRecordBtn.disabled = false;
         playback.style.display = "none";
 // Đồng hồ đếm ngược 5 giây
+clearInterval(countdownTimer);
 let secondsLeft = 5;
 countdown.textContent = "⏱️ " + secondsLeft;
 
-const countdownTimer = setInterval(() => {
+countdownTimer = setInterval(() => {
     if (!recorder || recorder.state !== "recording") {
         clearInterval(countdownTimer);
         countdown.textContent = "";
@@ -399,6 +419,7 @@ const countdownTimer = setInterval(() => {
 
 stopRecordBtn.onclick = () => {
     if (recorder && recorder.state === "recording") {
+        clearInterval(countdownTimer);
         recorder.stop();
         recordBtn.disabled = false;
         stopRecordBtn.disabled = true;
@@ -429,6 +450,7 @@ practiceText.textContent = "Con hãy nghe và nói theo nhé!";
 practiceBox.appendChild(practiceText);
 
 let currentSentence = 0;
+let sentenceAttempts = 0;
 
 const targetText = document.createElement("h2");
 targetText.textContent = sentences.length
@@ -470,43 +492,41 @@ speakBtn.onclick = () => {
     result.textContent = "🎤 Đang nghe con nói...";
 
     recognition.onresult = (event) => {
-        const heard = event.results[0][0].transcript
-            .toLowerCase()
-            .replace(/[.,!?]/g, "")
-            .trim();
+        if (!sentences[currentSentence]) return;
+        const heard = event.results[0][0].transcript;
+        const target = sentences[currentSentence].SENTENCE;
+        const heardNormalized = normalizeSpeech(heard);
+        const targetNormalized = normalizeSpeech(target);
 
-        const target = sentences[currentSentence].SENTENCE
-            .toLowerCase()
-            .replace(/[.,!?]/g, "")
-            .trim();
+        const correct = speechMatches(heard, target) ||
+            (targetNormalized === "hello i'm mai" &&
+                ["hello am i", "hello i'm my", "hello my"].includes(heardNormalized)) ||
+            (targetNormalized === "goodbye mai" &&
+                ["goodbye my", "goodbye may"].includes(heardNormalized));
 
-        
-if (
-    heard === target ||
-    (target === "hello i'm mai" &&
-        ["hello am i", "hello i'm my", "hello my"].includes(heard)) ||
-    (target === "goodbye mai" &&
-        ["goodbye my", "goodbye may"].includes(heard))
-) {
-
+        if (correct) {
+            sentenceAttempts = 0;
             result.textContent = "🌟 Giỏi lắm! Con đã nói đúng!";
             speak("Great job!");
-
-            currentSentence++;
-
-            if (currentSentence < sentences.length) {
-                targetText.textContent =
-                    sentences[currentSentence].SENTENCE;
-            } else {
-                result.textContent =
-                    "🎉 Tuyệt vời! Con đã hoàn thành phần luyện nói!";
-                speak("Excellent!");
-                currentSentence = 0;
-                targetText.textContent = sentences[0].SENTENCE;
-            }
         } else {
-            result.textContent =
-                "😊 Cô nghe được: " + heard + ". Con thử lại nhé!";
+            sentenceAttempts++;
+            if (sentenceAttempts < 3) {
+                result.textContent = "😊 Cô nghe được: " + heard +
+                    ". Con thử lại nhé! (" + sentenceAttempts + "/3 lần)";
+                return;
+            }
+            sentenceAttempts = 0;
+            result.textContent = "🌷 Con đã rất cố gắng! Mình nói câu tiếp theo nhé!";
+        }
+
+        currentSentence++;
+        if (currentSentence < sentences.length) {
+            targetText.textContent = sentences[currentSentence].SENTENCE;
+        } else {
+            result.textContent = "🎉 Tuyệt vời! Con đã hoàn thành phần luyện nói!";
+            speak("Excellent!");
+            currentSentence = 0;
+            targetText.textContent = sentences[0].SENTENCE;
         }
     };
 
