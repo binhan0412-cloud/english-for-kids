@@ -59,6 +59,19 @@
       speechSynthesis.speak(voice);
     }
 
+function speakVietnamese(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  speechSynthesis.cancel();
+
+  const voice = new SpeechSynthesisUtterance(text);
+  voice.lang = "vi-VN";
+  voice.rate = 0.9;
+  voice.pitch = 1.1;
+
+  speechSynthesis.speak(voice);
+}
+
     // Chuẩn hóa câu nói để tránh bắt lỗi do dấu câu hoặc khoảng trắng.
     function normalizeSpeech(value) {
       return String(value || "")
