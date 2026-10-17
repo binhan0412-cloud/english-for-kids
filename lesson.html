@@ -305,10 +305,10 @@ wordSpeakBtn.onclick = () => {
         }
     };
 
-    recognition.onerror = () => {
-        wordResult.textContent = "😊 Con thử đọc lại nhé!";
-        wordSpeakBtn.disabled = false;
-    };
+   recognition.onerror = () => {
+    wordResult.textContent =
+        "😊 Cô chưa nghe rõ. Con thử đọc lại nhé!";
+};
 
     recognition.onend = () => {
         wordSpeakBtn.disabled = false;
