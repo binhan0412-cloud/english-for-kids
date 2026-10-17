@@ -262,10 +262,28 @@ let pronunciationAttempts = 0;
         } else {
     pronunciationAttempts++;
 
-    wordResult.textContent =
-        "😊 Cô nghe được: " + heard +
-        ". Con thử lại nhé! (" +
-        pronunciationAttempts + "/3 lần)";
+    if (pronunciationAttempts >= 3) {
+        wordResult.textContent =
+            "🌷 Con đã rất cố gắng! Mình học từ tiếp theo nhé!";
+
+        currentWord++;
+        pronunciationAttempts = 0;
+
+        if (currentWord < words.length) {
+            wordTarget.textContent = words[currentWord].WORD;
+        } else {
+            wordResult.textContent =
+                "🎉 Tuyệt vời! Con đã hoàn thành phần luyện đọc từ vựng!";
+            currentWord = 0;
+            wordTarget.textContent = words[0].WORD;
+        }
+
+    } else {
+        wordResult.textContent =
+            "😊 Cô nghe được: " + heard +
+            ". Con thử lại nhé! (" +
+            pronunciationAttempts + "/3 lần)";
+    }
 }
     };
 
