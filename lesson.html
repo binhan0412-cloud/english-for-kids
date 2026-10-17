@@ -195,7 +195,7 @@ wordPracticeGuide.textContent = "Con hãy nghe và đọc từng từ nhé!";
 wordPracticeBox.appendChild(wordPracticeGuide);
 
 let currentWord = 0;
-
+let pronunciationAttempts = 0;
 const wordTarget = document.createElement("h2");
 wordTarget.textContent = words.length
     ? words[0].WORD
@@ -233,7 +233,7 @@ wordSpeakBtn.onclick = () => {
     recognition.lang = "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
+let pronunciationAttempts = 0;
     wordResult.textContent = "🎤 Cô đang nghe con đọc...";
     wordSpeakBtn.disabled = true;
 
