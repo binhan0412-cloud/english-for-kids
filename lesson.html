@@ -572,9 +572,13 @@ speakBtn.onclick = () => {
         }
     };
 
-    recognition.onerror = () => {
-        result.textContent = "😊 Con thử nói lại nhé!";
-    };
+    
+recognition.onerror = () => {
+    result.textContent =
+        "😊 Cô chưa nghe rõ. Con thử nói lại nhé!";
+    speakVietnamese("Cô chưa nghe rõ. Con thử lại lần nữa nhé!");
+};
+
 
     recognition.start();
 };
