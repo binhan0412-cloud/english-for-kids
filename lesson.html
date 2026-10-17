@@ -262,6 +262,7 @@ wordSpeakBtn.onclick = () => {
     }
 
     const recognition = new SpeechRecognition();
+  let daCoKetQuaNhanDien = false;
     recognition.lang = "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 3;
@@ -269,6 +270,7 @@ wordSpeakBtn.onclick = () => {
     wordSpeakBtn.disabled = true;
 
     recognition.onresult = (event) => {
+      daCoKetQuaNhanDien = true;
         if (!words[currentWord]) return;
         const alternatives = Array.from(event.results[0] || [])
             .map(result => result.transcript);
