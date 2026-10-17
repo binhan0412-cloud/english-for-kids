@@ -554,6 +554,7 @@ speakBtn.onclick = () => {
             if (sentenceAttempts < 3) {
                 result.textContent = "😊 Cô nghe được: " + heard +
                     ". Con thử lại nhé! (" + sentenceAttempts + "/3 lần)";
+              speakVietnamese("Con thử lại lần nữa nhé!");
                 return;
             }
             sentenceAttempts = 0;
