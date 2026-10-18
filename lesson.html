@@ -51,6 +51,38 @@
     const params = new URLSearchParams(location.search);
     const lessonId = params.get("lesson") || params.get("id") || "GRE_L01";
 
+    // Chỉ bật phương án tương thích cho iPhone; thiết bị khác giữ nguyên.
+    const IS_IPHONE = /iPhone/i.test(navigator.userAgent);
+
+    function speakOnIPhone(text, audioUrl) {
+      if (IS_IPHONE && String(audioUrl || "").trim()) {
+        playLearningAudio(audioUrl, text);
+      } else {
+        speak(text);
+      }
+    }
+
+    function makeIPhoneRecorder(stream) {
+      if (!IS_IPHONE) return new MediaRecorder(stream);
+      const supported = ["audio/mp4", "audio/webm;codecs=opus", "audio/webm"]
+        .find(type => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(type));
+      return supported ? new MediaRecorder(stream, { mimeType: supported }) : new MediaRecorder(stream);
+    }
+
+    function finishIPhonePlayback(player, chunks, mime, oldUrl) {
+      if (!IS_IPHONE) return null;
+      const type = mime || (chunks[0] && chunks[0].type) || "audio/mp4";
+      const blob = new Blob(chunks, { type });
+      if (!blob.size) throw new Error("Không thu được dữ liệu âm thanh.");
+      if (oldUrl) URL.revokeObjectURL(oldUrl);
+      const url = URL.createObjectURL(blob);
+      player.src = url;
+      player.load();
+      player.style.display = "block";
+      player.onerror = () => { player.insertAdjacentText("afterend", " ⚠️ iPhone không phát được bản ghi này. Vui lòng thử lại."); };
+      return url;
+    }
+
     function speak(text) {
       speechSynthesis.cancel();
       const voice = new SpeechSynthesisUtterance(text);
@@ -250,7 +282,7 @@ const wordListenBtn = document.createElement("button");
 wordListenBtn.textContent = "🔊 Nghe mẫu";
 wordListenBtn.onclick = () => {
     if (words[currentWord]) {
-        playLearningAudio(words[currentWord].AUDIO, words[currentWord].WORD);
+        speakOnIPhone(words[currentWord].WORD, words[currentWord].AUDIO);
     }
 };
 wordPracticeBox.appendChild(wordListenBtn);
@@ -396,7 +428,7 @@ recordBtn.onclick = async () => {
         });
 
         recordedChunks = [];
-        recorder = new MediaRecorder(recordingStream);
+        recorder = makeIPhoneRecorder(recordingStream);
 
         recorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
@@ -406,6 +438,13 @@ recordBtn.onclick = async () => {
 
         recorder.onstop = () => {
             clearInterval(countdownTimer);
+            if (IS_IPHONE) {
+                try { recordingUrl = finishIPhonePlayback(playback, recordedChunks, recorder.mimeType, recordingUrl); }
+                catch (e) { alert("Không tạo được bản ghi trên iPhone: " + e.message); }
+                recordingStream.getTracks().forEach(track => track.stop());
+                recordingStream = null;
+                return;
+            }
             const blob = new Blob(recordedChunks, {
                 type: recorder.mimeType
             });
@@ -503,7 +542,7 @@ const listenBtn = document.createElement("button");
 listenBtn.textContent = "🔊 Nghe mẫu";
 listenBtn.onclick = () => {
     if (sentences[currentSentence]) {
-        playLearningAudio(sentences[currentSentence].AUDIO, sentences[currentSentence].SENTENCE);
+        speakOnIPhone(sentences[currentSentence].SENTENCE, sentences[currentSentence].AUDIO);
     }
 };
 practiceBox.appendChild(listenBtn);
@@ -638,7 +677,7 @@ sentenceRecordBtn.onclick = async () => {
         });
 
         sentenceChunks = [];
-        sentenceRecorder = new MediaRecorder(sentenceStream);
+        sentenceRecorder = makeIPhoneRecorder(sentenceStream);
 
         sentenceRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
@@ -647,6 +686,15 @@ sentenceRecordBtn.onclick = async () => {
         };
 
         sentenceRecorder.onstop = () => {
+            if (IS_IPHONE) {
+                try { sentenceRecordingUrl = finishIPhonePlayback(sentencePlayback, sentenceChunks, sentenceRecorder.mimeType, sentenceRecordingUrl); }
+                catch (e) { alert("Không tạo được bản ghi trên iPhone: " + e.message); }
+                if (sentenceStream) {
+                    sentenceStream.getTracks().forEach(track => track.stop());
+                    sentenceStream = null;
+                }
+                return;
+            }
             const blob = new Blob(sentenceChunks, {
                 type: sentenceRecorder.mimeType
             });
