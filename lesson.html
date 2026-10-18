@@ -250,7 +250,7 @@ const wordListenBtn = document.createElement("button");
 wordListenBtn.textContent = "🔊 Nghe mẫu";
 wordListenBtn.onclick = () => {
     if (words[currentWord]) {
-        speak(words[currentWord].WORD);
+        playLearningAudio(words[currentWord].AUDIO, words[currentWord].WORD);
     }
 };
 wordPracticeBox.appendChild(wordListenBtn);
@@ -503,7 +503,7 @@ const listenBtn = document.createElement("button");
 listenBtn.textContent = "🔊 Nghe mẫu";
 listenBtn.onclick = () => {
     if (sentences[currentSentence]) {
-        speak(sentences[currentSentence].SENTENCE);
+        playLearningAudio(sentences[currentSentence].AUDIO, sentences[currentSentence].SENTENCE);
     }
 };
 practiceBox.appendChild(listenBtn);
