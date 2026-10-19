@@ -381,30 +381,64 @@
   </div>
 
   <script>
+// Chỉ áp dụng các điều chỉnh âm thanh cho iPhone/iOS.
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+let iosUtterance = null;
+
 function playSong() {
   const song = document.getElementById("hello-song");
-
-  if (song.paused) {
-    song.play();
-  } else {
-    song.pause();
-    song.currentTime = 0;
+  if (!isIOS) {
+    if (song.paused) { song.play(); }
+    else { song.pause(); song.currentTime = 0; }
+    return;
   }
+  if (!song.paused) { song.pause(); song.currentTime = 0; return; }
+  // Safari cần bắt lỗi play() để hiển thị nguyên nhân thay vì im lặng.
+  song.load();
+  const pending = song.play();
+  if (pending && pending.catch) pending.catch(err => {
+    alert("iPhone không phát được bài hát: " + (err.name || 'AudioError') +
+      ". Vui lòng kiểm tra âm lượng và thử lại.");
+  });
 }
-    function speak(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.lang = 'en-US';
-        speech.rate = 0.75;
-        speech.pitch = 1.1;
-
-        window.speechSynthesis.speak(speech);
-      } else {
-        alert("Trình duyệt này chưa hỗ trợ chức năng phát âm.");
-      }
+function speak(text) {
+  if (!('speechSynthesis' in window)) {
+    alert("Trình duyệt này chưa hỗ trợ chức năng phát âm.");
+    return;
+  }
+  if (!isIOS) {
+    // Giữ nguyên hoàn toàn hành vi trên Android và máy tính.
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'en-US';
+    speech.rate = 0.75;
+    speech.pitch = 1.1;
+    window.speechSynthesis.speak(speech);
+    return;
+  }
+  // Safari: giữ tham chiếu utterance, chọn giọng Anh có sẵn và xử lý lỗi.
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  const speech = new SpeechSynthesisUtterance(text);
+  iosUtterance = speech;
+  speech.lang = 'en-US';
+  speech.rate = 0.85;
+  speech.pitch = 1;
+  const voices = synth.getVoices();
+  const englishVoice = voices.find(v => /^en-US$/i.test(v.lang)) ||
+    voices.find(v => /^en/i.test(v.lang));
+  if (englishVoice) speech.voice = englishVoice;
+  speech.onerror = e => {
+    if (e.error !== 'canceled' && e.error !== 'interrupted') {
+      console.warn('iOS speech error:', e.error);
+      document.getElementById('speech-result').textContent =
+        'iPhone chưa phát được giọng đọc (' + e.error + ').';
     }
+  };
+  synth.speak(speech);
+  if (synth.paused) synth.resume();
+}
 const practiceItems = [
     "Hello",
     "Hello, I'm Mai.",
@@ -510,7 +544,13 @@ async function startRecording() {
     try {
         audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-        mediaRecorder = new MediaRecorder(audioStream);
+        if (isIOS && typeof MediaRecorder.isTypeSupported === "function") {
+            const iosType = ["audio/mp4", "audio/aac", "audio/webm"].find(
+              type => MediaRecorder.isTypeSupported(type));
+            mediaRecorder = iosType ? new MediaRecorder(audioStream, {mimeType: iosType}) : new MediaRecorder(audioStream);
+        } else {
+            mediaRecorder = new MediaRecorder(audioStream);
+        }
         audioChunks = [];
 
         mediaRecorder.ondataavailable = function(event) {
@@ -518,6 +558,11 @@ async function startRecording() {
         };
 
         mediaRecorder.onstop = function() {
+            if (isIOS && !audioChunks.some(chunk => chunk.size > 0)) {
+                status.textContent = "Không nhận được dữ liệu ghi âm trên iPhone. Vui lòng thử lại.";
+                audioStream.getTracks().forEach(track => track.stop());
+                return;
+            }
             const audioBlob = new Blob(audioChunks, {
                 type: mediaRecorder.mimeType
             });
@@ -544,13 +589,20 @@ setTimeout(() => {
     }
 }, 5000);
     } catch (error) {
-        status.innerHTML = "🎤 Hãy cho phép ứng dụng sử dụng micro nhé!";
+        status.innerHTML = isIOS
+          ? "Lỗi ghi âm iPhone: " + (error.name || "Không xác định")
+          : "🎤 Hãy cho phép ứng dụng sử dụng micro nhé!";
+        if (audioStream) audioStream.getTracks().forEach(track => track.stop());
     }
 }
 function playMyRecording() {
     const audio = document.getElementById("my-recording");
     audio.currentTime = 0;
-    audio.play();
+    const pending = audio.play();
+    if (isIOS && pending && pending.catch) pending.catch(error => {
+        document.getElementById("record-status").textContent =
+          "iPhone không phát được bản ghi: " + (error.name || "AudioError");
+    });
 }
 function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === "recording") {
