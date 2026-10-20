@@ -550,7 +550,7 @@ const listenBtn = document.createElement("button");
 listenBtn.textContent = "🔊 Nghe mẫu";
 listenBtn.onclick = () => {
     if (sentences[currentSentence]) {
-        speakOnIPhone(sentences[currentSentence].SENTENCE, sentences[currentSentence].AUDIO);
+        playLearningAudio(sentences[currentSentence].AUDIO, sentences[currentSentence].SENTENCE);
     }
 };
 practiceBox.appendChild(listenBtn);
